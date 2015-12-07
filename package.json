@@ -1,7 +1,7 @@
 {
   "name": "react-entity",
   "version": "1.0.0",
-  "description": "Create entities base on React propTypes styles",
+  "description": "Create entities base on React propTypes",
   "main": "lib/ReactEntity.js",
   "scripts": {
     "postinstall": "babel ./src -d lib",
