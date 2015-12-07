@@ -28,6 +28,7 @@
     "babel": "^5.8.23"
   },
   "devDependencies": {
+    "faker": "^3.0.1",
     "istanbul": "^0.4.0",
     "jasmine": "^2.3.2",
     "jasmine-spec-reporter": "^2.4.0",

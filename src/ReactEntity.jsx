@@ -1,15 +1,15 @@
 export default class Entity {
   constructor(data){
+    this.schema = this.constructor.SCHEMA;
     this.errors = {};
-    this.data = this.mergeDefault(data);
-    this.validate()
+    this.data   = this.mergeDefault(data || {});
+    this.validate();
   }
 
   mergeDefault(data){
-    const schema = this.constructor.SCHEMA;
     const newData = {};
-    for(var field in schema){
-      newData[field] = data[field] || schema[field].defaultValue;
+    for(var field in this.schema){
+      newData[field] = data[field] || this.schema[field].defaultValue;
 
       Object.defineProperty(this, field, {
         set: (value) => {
@@ -28,23 +28,27 @@ export default class Entity {
     return this.data;
   }
 
-  validate(){
-    let hasError = false;
-    this.errors = {};
-    const schema = this.constructor.SCHEMA;
-    const newData = {};
+  validateField(field) {
+    const type = typeof(this.schema[field]) === 'function' ?
+                   this.schema[field] :
+                   this.schema[field].type;
 
-    for(var field in schema){
-      let type = typeof(schema[field]) === 'function' ? schema[field] : schema[field].type;
-      let error = type(this.data,field,this.constructor.name + 'Entity');
-      if (error) {
-        hasError = true;
-        if (!this.errors[field])
-          this.errors[field] = {errors : []}
-        this.errors[field].errors.push(error.message || error);
+    const error = type(this.data, field, this.constructor.name + 'Entity');
+
+    if (error) {
+      if (!this.errors[field]) {
+        this.errors[field] = { errors : [] }
       }
-    }
 
-    return hasError;
+      this.errors[field].errors.push(error.message || error);
+    }
+  }
+
+  validate(){
+    this.errors = {};
+
+    for(var field in this.schema){
+      this.validateField(field);
+    }
   }
 }
