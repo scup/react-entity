@@ -1,0 +1,37 @@
+{
+  "name": "react-entity",
+  "version": "1.0.0",
+  "description": "Create entities base on React propTypes styles",
+  "main": "lib/ReactEntity.js",
+  "scripts": {
+    "postinstall": "babel ./src -d lib",
+    "test": "node spec/jasmine-runner",
+    "coverage": "istanbul cover 'spec/jasmine-runner.js' && open ./coverage/lcov-report/index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/scup/react-entity"
+  },
+  "keywords": [
+    "Javascript",
+    "Entities",
+    "React",
+    "Entities"
+  ],
+  "author": "Scup",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/scup/react-entity/issues"
+  },
+  "homepage": "https://github.com/scup/react-entity",
+  "dependencies": {
+    "babel": "^5.8.23"
+  },
+  "devDependencies": {
+    "istanbul": "^0.4.0",
+    "jasmine": "^2.3.2",
+    "jasmine-spec-reporter": "^2.4.0",
+    "react": "^0.14.3",
+    "sinon": "^1.17.2"
+  }
+}
