@@ -9,7 +9,11 @@ class FakeEntityWithDefault extends ReactEntity {
     [defaultField]: {
       type: function(){},
       defaultValue: defaultValue
-    }
+    },
+    [`_${defaultField}`]: {
+      type: function(){},
+      defaultValue: `_${defaultValue}`
+    },
   }
 }
 
@@ -40,7 +44,8 @@ describe('ReactEntity', function (){
     });
 
     expect(fakeEntity.fetch()).toEqual({
-      [defaultField]: defaultValue
+      [defaultField]: defaultValue,
+      [`_${defaultField}`]: `_${defaultValue}`
     });
   });
 
@@ -48,10 +53,10 @@ describe('ReactEntity', function (){
     const fakeEntity = new FakeEntityWithDefault();
     spyOn(fakeEntity, 'validate');
 
-    fakeEntity[defaultField] = defaultValue;
+    fakeEntity[`_${defaultField}`] = `_${defaultValue}`;
     expect(fakeEntity.validate).not.toHaveBeenCalled();
 
-    fakeEntity[defaultField] = defaultValue + 'aasa';
+    fakeEntity[`_${defaultField}`] = defaultValue;
     expect(fakeEntity.validate).toHaveBeenCalled();
   });
 
