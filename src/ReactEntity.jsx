@@ -20,7 +20,8 @@ export default class Entity {
 
   mergeDefault(data){
     const newData = {};
-    for(var field in this.schema){
+    let field;
+    for(field in this.schema){
       newData[field] = data[field] || this.schema[field].defaultValue;
 
       Object.defineProperty(this, field, createGetterAndSetter(this, field));
@@ -51,7 +52,8 @@ export default class Entity {
   validate(){
     this.errors = {};
 
-    for(var field in this.schema){
+    let field;
+    for(field in this.schema){
       this.validateField(field);
     }
   }

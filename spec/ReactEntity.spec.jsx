@@ -7,11 +7,11 @@ const defaultValue = Faker.name.firstName();
 class FakeEntityWithDefault extends ReactEntity {
   static SCHEMA = {
     [defaultField]: {
-      type: function(){},
+      type: function (){},
       defaultValue: defaultValue
     },
     [`_${defaultField}`]: {
-      type: function(){},
+      type: function (){},
       defaultValue: `_${defaultValue}`
     },
   }
@@ -19,11 +19,11 @@ class FakeEntityWithDefault extends ReactEntity {
 
 class Validatable extends ReactEntity {
   static SCHEMA = {
-    field: function(data, propName, entityName){
+    field: function (data, propName, entityName){
       return `${propName} wrong on ${entityName}`;
     },
     otherField: {
-      type: function(data, propName, entityName){
+      type: function (data, propName, entityName){
         return new Error(`${propName} wrong on ${entityName}`);
       },
       defaultValue: 'bla'
