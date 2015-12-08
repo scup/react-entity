@@ -6,15 +6,24 @@ const createGetterAndSetter = function (instance, field){
         instance.validate();
       }
     },
-    get: function (){ return instance.data[field]; }
+    get: function (){ return instance.data[field]; },
+    enumerable: true
   }
 }
 
 export default class ReactEntity {
   constructor(data){
-    this.schema = this.constructor.SCHEMA;
+    Object.defineProperty(this, 'schema', {
+      value: this.constructor.SCHEMA,
+      enumerable: false
+    });
+
     this.errors = {};
-    this.data   = this.mergeDefault(data || {});
+    Object.defineProperty(this, 'data', {
+      value: this.mergeDefault(data || {}),
+      enumerable: false
+    });
+    
     this.validate();
   }
 
@@ -30,8 +39,8 @@ export default class ReactEntity {
   }
 
   fetch(){
-    var rawData = {};
-    for(var field in this.data){
+    let rawData = {};
+    for(let field in this.data){
        rawData[field] = this.fetchChild(this.data[field]);
     }
 
