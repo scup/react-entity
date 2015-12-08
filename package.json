@@ -6,7 +6,7 @@
   "scripts": {
     "postinstall": "babel ./src -d lib",
     "test": "node spec/jasmine-runner",
-    "coverage": "istanbul cover 'spec/jasmine-runner.js' && open ./coverage/lcov-report/index.html"
+    "coverage": "babel-istanbul cover 'spec/jasmine-runner.js' -x '**/spec/**' && open ./coverage/lcov-report/index.html"
   },
   "repository": {
     "type": "git",
@@ -25,11 +25,12 @@
   },
   "homepage": "https://github.com/scup/react-entity",
   "dependencies": {
-    "babel": "^5.8.23"
+    "babel": "^5.8.23",
+    "babel-core": "^6.3.15",
+    "babel-istanbul": "^0.5.9"
   },
   "devDependencies": {
     "faker": "^3.0.1",
-    "istanbul": "^0.4.0",
     "jasmine": "^2.3.2",
     "jasmine-spec-reporter": "^2.4.0",
     "react": "^0.14.3",
