@@ -1,6 +1,6 @@
 {
   "name": "react-entity",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Create entities base on React propTypes",
   "main": "lib/ReactEntity.js",
   "scripts": {
