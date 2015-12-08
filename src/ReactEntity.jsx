@@ -32,10 +32,7 @@ export default class ReactEntity {
   fetch(){
     var rawData = {};
     for(var field in this.data){
-
-       rawData[field] = this.fetchChild(this.data[field])
-
-
+       rawData[field] = this.fetchChild(this.data[field]);
     }
 
     return rawData;
@@ -43,12 +40,13 @@ export default class ReactEntity {
   }
 
   fetchChild(fieldValue){
+
     if (Array.isArray(fieldValue)){
-      return fieldValue = fieldValue.map(this.fetchChild)
+      return fieldValue.map(this.fetchChild)
     }
 
     if (fieldValue.fetch){
-      return fieldValue.fetch;
+      return fieldValue.fetch();
     }
 
     return fieldValue
