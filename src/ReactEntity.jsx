@@ -30,7 +30,17 @@ export default class ReactEntity {
   }
 
   fetch(){
-    return this.data;
+    var rawData = {};
+    for(var field in this.data){
+      if (this.data[field].fetch){
+        rawData[field] = this.data[field].fetch;
+      }else{
+        rawData[field] = this.data[field]
+      }
+    }
+
+    return rawData;
+
   }
 
   validateField(field) {
