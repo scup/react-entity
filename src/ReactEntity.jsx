@@ -1,3 +1,15 @@
+const createGetterAndSetter = function (instance, field){
+  return {
+    set: function (value){
+      if(instance.data[field] !== value) {
+        instance.data[field] = value;
+        instance.validate();
+      }
+    },
+    get: function (){ return instance.data[field]; }
+  }
+}
+
 export default class Entity {
   constructor(data){
     this.schema = this.constructor.SCHEMA;
@@ -11,15 +23,7 @@ export default class Entity {
     for(var field in this.schema){
       newData[field] = data[field] || this.schema[field].defaultValue;
 
-      Object.defineProperty(this, field, {
-        set: (value) => {
-          if(this.data[field] !== value) {
-            this.data[field] = value;
-            this.validate();
-          }
-        },
-        get: () => this.data[field]
-      })
+      Object.defineProperty(this, field, createGetterAndSetter(this, field));
     }
     return newData;
   }
