@@ -44,7 +44,7 @@ export default class ReactEntity {
 
   fetchChild(fieldValue){
     if (Array.isArray(fieldValue)){
-      return fieldValue = fieldValue.map(fetchChild)
+      return fieldValue = fieldValue.map(this.fetchChild)
     }
 
     if (fieldValue.fetch){
