@@ -10,7 +10,7 @@ const createGetterAndSetter = function (instance, field){
   }
 }
 
-export default class Entity {
+export default class ReactEntity {
   constructor(data){
     this.schema = this.constructor.SCHEMA;
     this.errors = {};
