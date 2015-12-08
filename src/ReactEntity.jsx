@@ -32,14 +32,26 @@ export default class ReactEntity {
   fetch(){
     var rawData = {};
     for(var field in this.data){
-      if (this.data[field].fetch){
-        rawData[field] = this.data[field].fetch;
-      }else{
-        rawData[field] = this.data[field]
-      }
+
+       rawData[field] = this.fetchChild(this.data[field])
+
+
     }
 
     return rawData;
+
+  }
+
+  fetchChild(fieldValue){
+    if (Array.isArray(fieldValue)){
+      return fieldValue = fieldValue.map(fetchChild)
+    }
+
+    if (fieldValue.fetch){
+      return fieldValue.fetch;
+    }
+
+    return fieldValue
 
   }
 
