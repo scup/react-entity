@@ -60,6 +60,16 @@ describe('ReactEntity', function (){
     expect(fakeEntity.validate).toHaveBeenCalled();
   });
 
+  it('should not use defaultValue when a value is passed', function (){
+    const newValue = Faker.name.findName();
+    const fakeEntity = new FakeEntityWithDefault({
+      [defaultField]: newValue
+    });
+
+    expect(fakeEntity[`_${defaultField}`]).toBe(`_${defaultValue}`);
+    expect(fakeEntity[defaultField]).toBe(newValue);
+  });
+
   it('should validate when build', function (){
     // given
     spyOn(Validatable.SCHEMA, 'field').and.returnValue(null)
