@@ -69,3 +69,8 @@ console.log(anotherInstance.fetch()); // { field: 'myString', otherField: 10 }
 ```
 See [React PropTypes](https://facebook.github.io/react/docs/reusable-components.html)
 
+### Well known issues
+  - Build collection automatically
+  - Create helpers for collection
+  - Create validation
+  - Create identifier and equal comparison
