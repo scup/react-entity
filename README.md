@@ -1,5 +1,7 @@
 ## react-entity - Create entities base on [React](https://github.com/facebook/react) [propTypes](https://facebook.github.io/react/docs/reusable-components.html)
 
+[![Build Status](https://travis-ci.org/scup/react-entity.svg?branch=master)](https://travis-ci.org/scup/react-entity)
+
 * [Getting started](#getting-started)
 * [Features](#features)
 * [Examples](#examples)
