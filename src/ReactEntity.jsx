@@ -23,7 +23,7 @@ export default class ReactEntity {
       value: this.mergeDefault(data || {}),
       enumerable: false
     });
-    
+
     this.validate();
   }
 
@@ -85,5 +85,6 @@ export default class ReactEntity {
     for(field in this.schema){
       this.validateField(field);
     }
+    this.valid = Object.keys(this.errors).length === 0;
   }
 }

@@ -20,11 +20,15 @@ class FakeEntityWithDefault extends ReactEntity {
 class Validatable extends ReactEntity {
   static SCHEMA = {
     field: function (data, propName, entityName){
-      return `${propName} wrong on ${entityName}`;
+      if(data[propName] !== 'valid'){
+        return `${propName} wrong on ${entityName}`;
+      }
     },
     otherField: {
       type: function (data, propName, entityName){
-        return new Error(`${propName} wrong on ${entityName}`);
+        if(data[propName] !== 'valid'){
+          return new Error(`${propName} wrong on ${entityName}`);
+        }
       },
       defaultValue: 'bla'
     }
@@ -92,5 +96,17 @@ describe('ReactEntity', function (){
       'otherField',
       'ValidatableEntity'
     );
+  });
+
+  it('should auto validate', function (){
+    // when
+    const entity = new Validatable({ field: 'invalid', otherField: 'invalid'});
+
+    expect(entity.valid).toBe(false);
+    entity.field = 'valid';
+
+    expect(entity.valid).toBe(false);
+    entity.otherField = 'valid';
+    expect(entity.valid).toBe(true);
   });
 });
