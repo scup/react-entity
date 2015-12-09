@@ -47,9 +47,9 @@ console.log(buggedInstance.errors); /*
       errors: [ 'Invalid undefined `otherField` of type `string` supplied to `MyEntityEntity`, expected `number`.' ]
     }
   }
+*/
 ```
 
-*/
 #### Validate on change value
 ```javascript
 const otherInstance = new MyEntity({ field: 'myString' });
