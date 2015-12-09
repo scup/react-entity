@@ -12,7 +12,7 @@
 ### Features
 * This package let you create entities with schema validator like React PropTypes.
 
-###Examples
+### Examples
 ```javascript
 import { PropTypes } from 'react';
 
@@ -27,14 +27,14 @@ class MyEntity extends ReactEntity {
 }
 ```
 
-####Get default values
+#### Get default values
 ```javascript
 const niceInstance = new MyEntity();
 console.log(niceInstance.fetch()); // { field: undefined, otherField: 10 }
 console.log(niceInstance.errors); // {}
 ```
 
-####Validations
+#### Validations
 ```javascript
 const buggedInstance = new MyEntity({ field: 10, otherField: 'value' });
 console.log(buggedInstance.fetch()); // { field: 10, otherField: 'value' }
@@ -50,7 +50,7 @@ console.log(buggedInstance.errors); /*
 ```
 
 */
-####Validate on change value
+#### Validate on change value
 ```javascript
 const otherInstance = new MyEntity({ field: 'myString' });
 console.log(otherInstance.errors); // {}
@@ -61,7 +61,7 @@ console.log(otherInstance.errors); // {field: { errors: [ 'Invalid undefined `fi
 console.log(otherInstance.valid); // false 
 ```
 
-####Clean unexpected values
+#### Clean unexpected values
 ```javascript
 const anotherInstance = new MyEntity({ field: 'myString', fake: 'fake' });
 console.log(anotherInstance.fetch()); // { field: 'myString', otherField: 10 }
