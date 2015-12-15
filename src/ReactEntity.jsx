@@ -27,11 +27,22 @@ export default class ReactEntity {
     this.validate();
   }
 
+  applyEntityConstructor(Type,data){
+    if (Array.isArray(data))
+      return data.map(instance => new Type(instance));
+
+    return new Type(data);
+  }
+
   mergeDefault(data){
     const newData = {};
     let field;
     for(field in this.schema){
+
       newData[field] = data[field] || this.schema[field].defaultValue;
+
+      if (this.schema[field].type)
+        newData[field] = this.applyEntityConstructor(this.schema[field].type,newData[field])
 
       Object.defineProperty(this, field, createGetterAndSetter(this, field));
     }
@@ -53,7 +64,7 @@ export default class ReactEntity {
     if (Array.isArray(fieldValue)){
       return fieldValue.map(this.fetchChild)
     }
-
+    if (fieldValue)
     if (fieldValue.fetch){
       return fieldValue.fetch();
     }
@@ -65,7 +76,7 @@ export default class ReactEntity {
   validateField(field) {
     const type = typeof(this.schema[field]) === 'function' ?
                    this.schema[field] :
-                   this.schema[field].type;
+                   this.schema[field].validator;
 
     const error = type(this.data, field, this.constructor.name + 'Entity');
 

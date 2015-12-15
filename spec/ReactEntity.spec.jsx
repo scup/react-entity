@@ -7,11 +7,11 @@ const defaultValue = Faker.name.firstName();
 class FakeEntityWithDefault extends ReactEntity {
   static SCHEMA = {
     [defaultField]: {
-      type: function (){},
+      validator: function (){},
       defaultValue: defaultValue
     },
     [`_${defaultField}`]: {
-      type: function (){},
+      validator: function (){},
       defaultValue: `_${defaultValue}`
     },
   }
@@ -25,7 +25,7 @@ class Validatable extends ReactEntity {
       }
     },
     otherField: {
-      type: function (data, propName, entityName){
+      validator: function (data, propName, entityName){
         if(data[propName] !== 'valid'){
           return new Error(`${propName} wrong on ${entityName}`);
         }
@@ -77,7 +77,7 @@ describe('ReactEntity', function (){
   it('should validate when build', function (){
     // given
     spyOn(Validatable.SCHEMA, 'field').and.returnValue(null)
-    spyOn(Validatable.SCHEMA.otherField, 'type').and.returnValue(null)
+    spyOn(Validatable.SCHEMA.otherField, 'validator').and.returnValue(null)
 
     // when
     new Validatable({
@@ -91,7 +91,7 @@ describe('ReactEntity', function (){
       'field',
       'ValidatableEntity'
     );
-    expect(Validatable.SCHEMA.otherField.type).toHaveBeenCalledWith(
+    expect(Validatable.SCHEMA.otherField.validator).toHaveBeenCalledWith(
       { field: 'value', otherField: 'bla' },
       'otherField',
       'ValidatableEntity'
@@ -109,4 +109,5 @@ describe('ReactEntity', function (){
     entity.otherField = 'valid';
     expect(entity.valid).toBe(true);
   });
+
 });
