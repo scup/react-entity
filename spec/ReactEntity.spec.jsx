@@ -35,6 +35,22 @@ class Validatable extends ReactEntity {
   }
 }
 
+class ChildrenEntity  extends ReactEntity {
+  constructor(fields){
+    super(fields);
+    this.foo = 'bar';
+  }
+}
+
+class FatherEntity extends ReactEntity {
+  static SCHEMA = {
+    children: {
+      validator: function (){},
+      type: ChildrenEntity
+    }
+  }
+}
+
 describe('ReactEntity', function (){
   it('should merge with default data', function (){
     const fakeEntity = new FakeEntityWithDefault();
@@ -108,6 +124,18 @@ describe('ReactEntity', function (){
     expect(entity.valid).toBe(false);
     entity.otherField = 'valid';
     expect(entity.valid).toBe(true);
+  });
+
+  it('should build entities', function (){
+    const father = new FatherEntity({
+      children: [
+        {},
+        {}
+      ]
+    });
+
+    expect(father.children[0].constructor === ChildrenEntity).toBe(true);
+    expect(father.children[1].constructor === ChildrenEntity).toBe(true);
   });
 
 });

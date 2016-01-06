@@ -25,6 +25,15 @@ class MyEntity extends ReactEntity {
     }
   }
 }
+
+class FatherEntity extends ReactEntity {
+  static SCHEMA = {
+    children: {
+      validator: PropTypes.arrayOf(PropTypes.instanceOf(MyEntity)),
+      type: MyEntity
+    }
+  }
+}
 ```
 
 #### Get default values
@@ -58,7 +67,23 @@ console.log(otherInstance.valid); // true
 
 otherInstance.field = 1;
 console.log(otherInstance.errors); // {field: { errors: [ 'Invalid undefined `field` of type `number` supplied to `MyEntityEntity`, expected `string`.' ] }}
-console.log(otherInstance.valid); // false 
+console.log(otherInstance.valid); // false
+```
+
+#### Parse children to Entity
+```javascript
+const fatherInstance = new FatherEntity({
+  children: [{
+    field: 'A',
+    otherField: 2
+  }, {
+    field: 'B',
+    otherField: 3
+  }]  
+})
+console.log(fatherInstance.children[0]); //An instance of MyEntity
+console.log(fatherInstance.children[1].fetch());
+//{ field: 'B', otherField: 3 }
 ```
 
 #### Clean unexpected values
