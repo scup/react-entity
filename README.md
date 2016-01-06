@@ -95,7 +95,6 @@ console.log(anotherInstance.fetch()); // { field: 'myString', otherField: 10 }
 See [React PropTypes](https://facebook.github.io/react/docs/reusable-components.html)
 
 ### Well known issues
-  - Automatically build instance based on data
   - Create helpers for relationship
   - Create validation for relationship
   - Create identifier and equal comparison
