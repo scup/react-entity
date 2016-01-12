@@ -79,13 +79,13 @@ describe('ReactEntity', function (){
 
   it('should create set for property and call validate when change', function (){
     const fakeEntity = new FakeEntityWithDefault();
-    spyOn(fakeEntity, 'validate');
+    spyOn(fakeEntity, '_validate');
 
     fakeEntity[`_${defaultField}`] = `_${defaultValue}`;
-    expect(fakeEntity.validate).not.toHaveBeenCalled();
+    expect(fakeEntity._validate).not.toHaveBeenCalled();
 
     fakeEntity[`_${defaultField}`] = defaultValue;
-    expect(fakeEntity.validate).toHaveBeenCalled();
+    expect(fakeEntity._validate).toHaveBeenCalled();
   });
 
   it('should not use defaultValue when a value is passed', function (){
