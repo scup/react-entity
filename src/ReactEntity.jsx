@@ -3,7 +3,7 @@ const createGetterAndSetter = function (instance, field){
     set: function (value){
       if(instance.data[field] !== value) {
         instance.data[field] = value;
-        instance.validate();
+        return instance.validate();
       }
     },
     get: function (){ return instance.data[field]; },
@@ -12,9 +12,14 @@ const createGetterAndSetter = function (instance, field){
 }
 
 export default class ReactEntity {
-  constructor(data){
+  constructor(data) {
     Object.defineProperty(this, 'schema', {
       value: this.constructor.SCHEMA,
+      enumerable: false
+    });
+
+    Object.defineProperty(this, 'childrenEntities', {
+      value: Object.keys(this.constructor.SCHEMA).filter((field) => !!this.constructor.SCHEMA[field].type),
       enumerable: false
     });
 
@@ -27,7 +32,7 @@ export default class ReactEntity {
     this.validate();
   }
 
-  applyEntityConstructor(Type, data){
+  applyEntityConstructor(Type, data) {
     if (Array.isArray(data)) {
       return data.map(instance => new Type(instance));
     }
@@ -35,7 +40,7 @@ export default class ReactEntity {
     return new Type(data);
   }
 
-  mergeDefault(data){
+  mergeDefault(data) {
     const newData = {};
     let field;
     for(field in this.schema){
@@ -51,18 +56,16 @@ export default class ReactEntity {
     return newData;
   }
 
-  fetch(){
+  fetch() {
     let rawData = {};
     for(let field in this.data){
        rawData[field] = this.fetchChild(this.data[field]);
     }
 
     return rawData;
-
   }
 
   fetchChild(fieldValue){
-
     if (Array.isArray(fieldValue)){
       return fieldValue.map(this.fetchChild)
     }
@@ -72,7 +75,6 @@ export default class ReactEntity {
     }
 
     return fieldValue
-
   }
 
   validateField(field) {
@@ -91,7 +93,7 @@ export default class ReactEntity {
     }
   }
 
-  validate(){
+  validate() {
     this.errors = {};
 
     let field;
@@ -99,5 +101,28 @@ export default class ReactEntity {
       this.validateField(field);
     }
     this.valid = Object.keys(this.errors).length === 0;
+
+    if(!this.valid) {
+      return this.errors;
+    }
+  }
+
+  getErrors() {
+    this.validate();
+    const errors = Object.assign({}, this.errors);
+
+    for(let field of this.childrenEntities) {
+      const children = Array.isArray(this[field]) ? this[field] : [this[field]];
+
+      children.forEach((entity, index) => {
+        if(!entity.valid) {
+          if(errors[field] === undefined) { errors[field] = {} }
+
+          errors[field][index] = entity.getErrors();
+        }
+      })
+    }
+
+    return errors;
   }
 }
