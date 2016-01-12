@@ -2,17 +2,18 @@
 
 [![Build Status](https://travis-ci.org/scup/react-entity.svg?branch=master)](https://travis-ci.org/scup/react-entity)
 
-* [Getting started](#getting-started)
-* [Features](#features)
+This package let you create entities with schema validator like React PropTypes.
+
+* [Installing](#installing)
+* [Using](#using)
 * [Examples](#examples)
 
-### Getting started
+### Installing
     $ npm install react-entity
 
-### Features
-* This package let you create entities with schema validator like React PropTypes.
+### Using
 
-### Examples
+#### Sample Entities
 ```javascript
 import { PropTypes } from 'react';
 
@@ -90,11 +91,9 @@ console.log(fatherInstance.children[1].fetch());
 ```javascript
 const anotherInstance = new MyEntity({ field: 'myString', fake: 'fake' });
 console.log(anotherInstance.fetch()); // { field: 'myString', otherField: 10 }
-
 ```
-See [React PropTypes](https://facebook.github.io/react/docs/reusable-components.html)
+To understand the validators [React PropTypes](https://facebook.github.io/react/docs/reusable-components.html)
 
 ### Well known issues
-  - Create helpers for relationship
-  - Create validation for relationship
+  - Create helpers for relationships validations(Like, mininum, maximum)
   - Create identifier and equal comparison
