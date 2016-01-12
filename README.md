@@ -48,7 +48,7 @@ console.log(niceInstance.errors); // {}
 ```javascript
 const buggedInstance = new MyEntity({ field: 10, otherField: 'value' });
 console.log(buggedInstance.fetch()); // { field: 10, otherField: 'value' }
-console.log(buggedInstance.errors); /*
+console.log(buggedInstance.errors); /* or buggedInstance.getErrors() -- but... getErrors also includes children errors
   {
     field: {
       errors: [ 'Invalid undefined `field` of type `number` supplied to `MyEntityEntity`, expected `string`.' ]
