@@ -4,6 +4,12 @@ import ReactEntity from '../src/ReactEntity.jsx';
 const defaultField = Faker.name.firstName();
 const defaultValue = Faker.name.firstName();
 
+const fooValidator = function (data, propName){
+  if(data[propName] !== 'bar'){
+    return `${propName} accepts just 'bar' as value`;
+  }
+};
+
 class FakeEntityWithDefault extends ReactEntity {
   static SCHEMA = {
     [defaultField]: {
@@ -36,15 +42,17 @@ class Validatable extends ReactEntity {
 }
 
 class ChildrenEntity  extends ReactEntity {
-  constructor(fields){
-    super(fields);
-    this.foo = 'bar';
+  static SCHEMA = {
+    foo: fooValidator
   }
 }
 
 class FatherEntity extends ReactEntity {
   static SCHEMA = {
-    children: {
+    foo: {
+      validator: fooValidator,
+      defaultValue: 'bar'
+    }, children: {
       validator: function (){},
       type: ChildrenEntity
     }
@@ -71,13 +79,13 @@ describe('ReactEntity', function (){
 
   it('should create set for property and call validate when change', function (){
     const fakeEntity = new FakeEntityWithDefault();
-    spyOn(fakeEntity, 'validate');
+    spyOn(fakeEntity, '_validate');
 
     fakeEntity[`_${defaultField}`] = `_${defaultValue}`;
-    expect(fakeEntity.validate).not.toHaveBeenCalled();
+    expect(fakeEntity._validate).not.toHaveBeenCalled();
 
     fakeEntity[`_${defaultField}`] = defaultValue;
-    expect(fakeEntity.validate).toHaveBeenCalled();
+    expect(fakeEntity._validate).toHaveBeenCalled();
   });
 
   it('should not use defaultValue when a value is passed', function (){
@@ -126,16 +134,34 @@ describe('ReactEntity', function (){
     expect(entity.valid).toBe(true);
   });
 
-  it('should build entities', function (){
-    const father = new FatherEntity({
-      children: [
-        {},
-        {}
-      ]
+  describe('children', function (){
+    it('should auto buid child entities', function (){
+      const father = new FatherEntity({
+        children: [
+          {},
+          {}
+        ]
+      });
+
+      expect(father.children[0].constructor === ChildrenEntity).toBe(true);
+      expect(father.children[1].constructor === ChildrenEntity).toBe(true);
     });
 
-    expect(father.children[0].constructor === ChildrenEntity).toBe(true);
-    expect(father.children[1].constructor === ChildrenEntity).toBe(true);
-  });
+    it('should include errors of children', function (){
+      const father = new FatherEntity({
+        foo: 'test',
+        children: [{ foo: 'bar' }]
+      });
 
+      expect(father.getErrors()).toEqual({ foo: { errors: [ `foo accepts just 'bar' as value` ] } });
+
+      const lee = new ChildrenEntity({ foo: 'bar invalid '});
+      father.children.push(lee);
+
+      expect(father.getErrors()).toEqual({
+        foo: { errors: [ `foo accepts just 'bar' as value` ] },
+        children: { 1: { foo: { errors: [ `foo accepts just 'bar' as value` ] } } }
+      });
+    });
+  });
 });
