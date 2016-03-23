@@ -1,5 +1,5 @@
 import Faker from 'faker';
-import ReactEntity from '../src/ReactEntity.jsx';
+import ReactEntity, { ReactEntityCollection } from '../src/ReactEntity.jsx';
 
 const defaultField = Faker.name.firstName();
 const defaultValue = Faker.name.firstName();
@@ -21,6 +21,10 @@ class FakeEntityWithDefault extends ReactEntity {
       defaultValue: `_${defaultValue}`
     },
   }
+}
+
+class FakeEntityCollection extends ReactEntityCollection {
+  model = FakeEntityWithDefault
 }
 
 class Validatable extends ReactEntity {
@@ -162,6 +166,23 @@ describe('ReactEntity', function (){
         foo: { errors: [ `foo accepts just 'bar' as value` ] },
         children: { 1: { foo: { errors: [ `foo accepts just 'bar' as value` ] } } }
       });
+    });
+  });
+
+
+  describe('collection', function (){
+    it('should return a collection of object', function (){
+      const fakeEntity1 = new FatherEntity({
+        foo: 'test'
+      });
+      const fakeEntity2 = new FatherEntity({
+        foo: 'test'
+      });
+
+      const collection = new FakeEntityCollection([fakeEntity1, fakeEntity2]);
+      console.log('collection::::', collection.find({foo: 'bar'}));
+      // expect(father.children[0].constructor === ChildrenEntity).toBe(true);
+      // expect(father.children[1].constructor === ChildrenEntity).toBe(true);
     });
   });
 });

@@ -125,4 +125,18 @@ export default class ReactEntity {
 
     return errors;
   }
+
+}
+
+export class ReactEntityCollection {
+
+  items = []
+
+  constructor(data) {
+    this.items = data;
+  }
+
+  find(options) {
+    console.log('items::::' ,this.items);
+  }
 }
