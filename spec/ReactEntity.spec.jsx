@@ -23,8 +23,23 @@ class FakeEntityWithDefault extends ReactEntity {
   }
 }
 
-class FakeEntityCollection extends ReactEntityCollection {
-  model = FakeEntityWithDefault
+function awaysTruth(){
+  return true;
+}
+
+class ProductEntity extends ReactEntity {
+  static SCHEMA = {
+    name: awaysTruth,
+    price: awaysTruth
+  }
+}
+
+class ProductEntityCollection extends ReactEntityCollection {
+  static TYPE = ProductEntity
+
+  getSortedItemsByName() {
+    return this.sortBy('name');
+  }
 }
 
 class Validatable extends ReactEntity {
@@ -171,18 +186,82 @@ describe('ReactEntity', function (){
 
 
   describe('collection', function (){
+
     it('should return a collection of object', function (){
-      const fakeEntity1 = new FatherEntity({
-        foo: 'test'
-      });
-      const fakeEntity2 = new FatherEntity({
-        foo: 'test'
+
+      const products = [
+        {
+          name: 'A',
+          price: 1
+        },
+        {
+          name: 'B',
+          price: 2
+        },
+      ];
+
+      const collection = new ProductEntityCollection(products);
+
+      collection
+          .filter({name: 'A'})
+          .then( (product) => {
+              expect(product.length).toEqual(1);
+          });
+    });
+
+    it('should return a collection similar with keyBy/lodash ', function (){
+      const products = [
+        {
+          name: 'A',
+          price: 1
+        },
+        {
+          name: 'B',
+          price: 2
+        },
+      ];
+
+      const collection = new ProductEntityCollection(products);
+
+      collection
+          .filter({name: 'B'})
+          .keyBy('name')
+          .then( (product) => {
+              expect(!!product.B).toEqual(true);
+          });
+    });
+
+    it('should return a collection ordered by name ', function (){
+
+      const products = [
+        {
+          name: 'B'
+        },
+        {
+          name: 'C'
+        },
+        {
+          name: 'A'
+        }
+      ];
+
+      const collection = new ProductEntityCollection(products);
+
+      collection.getSortedItemsByName().then( (result) => {
+        expect(result).toEqual([
+          {
+            name: 'A'
+          },
+          {
+            name: 'B'
+          },
+          {
+            name: 'C'
+          }
+        ]);
       });
 
-      const collection = new FakeEntityCollection([fakeEntity1, fakeEntity2]);
-      console.log('collection::::', collection.find({foo: 'bar'}));
-      // expect(father.children[0].constructor === ChildrenEntity).toBe(true);
-      // expect(father.children[1].constructor === ChildrenEntity).toBe(true);
     });
+
   });
 });

@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 const createGetterAndSetter = function (instance, field){
   return {
     set: function (value){
@@ -132,11 +134,30 @@ export class ReactEntityCollection {
 
   items = []
 
+  _create(data) {
+    return new this.constructor(data);
+  }
+
   constructor(data) {
     this.items = data;
   }
 
-  find(options) {
-    console.log('items::::' ,this.items);
+  filter(predicate) {
+    const value = _.filter(this.items, predicate);
+    return this._create(value);
+  }
+
+  keyBy(iteratee) {
+    const value = _.keyBy(this.items, iteratee);
+    return this._create(value);
+  }
+
+  sortBy(iteratees) {
+    const value = _.sortBy(this.items, iteratees);
+    return this._create(value);
+  }
+
+  then( callback ) {
+    callback( this.items );
   }
 }
