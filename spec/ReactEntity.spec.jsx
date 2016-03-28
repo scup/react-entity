@@ -35,7 +35,7 @@ class ProductEntity extends ReactEntity {
 }
 
 class ProductEntityCollection extends ReactEntityCollection {
-  static TYPE = ProductEntity
+  static TYPE = ProductEntity;
 
   getSortedItemsByName() {
     return this.sortBy('name');
@@ -192,7 +192,7 @@ describe('ReactEntity', function (){
       const products = [
         {
           name: 'A',
-          price: 1
+          price: 10
         },
         {
           name: 'B',
@@ -201,12 +201,9 @@ describe('ReactEntity', function (){
       ];
 
       const collection = new ProductEntityCollection(products);
+      const results = collection.filter({name: 'A'}).result();
 
-      collection
-          .filter({name: 'A'})
-          .then( (product) => {
-              expect(product.length).toEqual(1);
-          });
+      expect(results[0].fetch()).toEqual({ name: 'A', price: 10 });
     });
 
     it('should return a collection similar with keyBy/lodash ', function (){
@@ -222,13 +219,13 @@ describe('ReactEntity', function (){
       ];
 
       const collection = new ProductEntityCollection(products);
+      const product = collection
+                        .filter({ name: 'B' })
+                        .keyBy('name');
 
-      collection
-          .filter({name: 'B'})
-          .keyBy('name')
-          .then( (product) => {
-              expect(!!product.B).toEqual(true);
-          });
+      expect(!!product.B).toBe(true);
+      expect(product.B.name).toEqual(products[1].name);
+      expect(product.B.price).toEqual(products[1].price);
     });
 
     it('should return a collection ordered by name ', function (){
@@ -238,7 +235,8 @@ describe('ReactEntity', function (){
           name: 'B'
         },
         {
-          name: 'C'
+          name: 'C',
+          price: 2
         },
         {
           name: 'A'
@@ -246,21 +244,31 @@ describe('ReactEntity', function (){
       ];
 
       const collection = new ProductEntityCollection(products);
+      const results = collection.getSortedItemsByName().result();
 
-      collection.getSortedItemsByName().then( (result) => {
-        expect(result).toEqual([
-          {
-            name: 'A'
-          },
-          {
-            name: 'B'
-          },
-          {
-            name: 'C'
-          }
-        ]);
-      });
+      expect(results[0].fetch()).toEqual({ name: 'A', price: undefined });
+      expect(results[1].fetch()).toEqual({ name: 'B', price: undefined });
+      expect(results[2].fetch()).toEqual({ name: 'C', price: 2 });
+    });
 
+    it('concat a list with another list ', function (){
+
+      const listA = [
+        {
+          name: 'AAA'
+        }
+      ];
+
+      const listB = [
+        {
+          name: 'BBB'
+        }
+      ];
+
+      const collection = new ProductEntityCollection(listA);
+      const results = collection.concat(listB).result();
+      console.log(results[0].fetch());
+      console.log(results[1].fetch());
     });
 
   });
