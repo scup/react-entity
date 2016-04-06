@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 const createGetterAndSetter = function (instance, field){
   return {
     set: function (value){
@@ -11,7 +13,7 @@ const createGetterAndSetter = function (instance, field){
   }
 }
 
-export default class ReactEntity {
+class ReactEntity {
   constructor(data) {
     Object.defineProperty(this, 'schema', {
       value: this.constructor.SCHEMA,
@@ -125,4 +127,64 @@ export default class ReactEntity {
 
     return errors;
   }
+
 }
+
+const LODASH_METHODS = [
+  'chunk', 'compact', 'concat', 'countBy', 'difference',
+  'differenceBy', 'differenceWith', 'drop', 'dropRight',
+  'dropRightWhile', 'dropWhile', 'each', 'eachRight',
+  'every', 'fill', 'filter', 'find', 'findIndex',
+  'findLast', 'findLastIndex', 'first', 'flatMap',
+  'flatten', 'flattenDeep', 'flattenDepth', 'forEach',
+  'forEachRight', 'fromPairs', 'groupBy', 'head',
+  'includes', 'indexOf', 'initial', 'intersection',
+  'intersectionBy', 'intersectionWith', 'invokeMap',
+  'join', 'keyBy', 'last', 'lastIndexOf', 'map', 'orderBy',
+  'partition', 'pull', 'pullAll', 'pullAllBy', 'pullAllWith',
+  'pullAt', 'reduce', 'reduceRight', 'reject', 'remove',
+  'reverse', 'sample', 'sampleSize', 'shuffle', 'size',
+  'slice', 'some', 'sortBy', 'sortedIndex', 'sortedIndexBy',
+  'sortedIndexOf', 'sortedLastIndex', 'sortedLastIndexBy',
+  'sortedLastIndexOf', 'sortedUniq', 'sortedUniqBy', 'tail', 'take',
+  'takeRight', 'takeRightWhile', 'takeWhile', 'union', 'unionBy',
+  'unionWith', 'uniq', 'uniqBy', 'uniqWith', 'unzip', 'unzipWith',
+  'without', 'xor', 'xorBy', 'xorWith', 'zip', 'zipObject',
+  'zipObjectDeep', 'zipWith'
+];
+
+class ReactEntityCollection {
+  constructor(data) {
+    this.items = _.map(data, ( item ) => {
+      if( _.isNil(item) || _.isPlainObject(item) ) {
+        return new this.constructor.TYPE(item);
+      }
+
+      return item;
+    });
+  }
+
+  result() {
+    return this.items;
+  }
+}
+
+const reduceToNewItem = (all, arg) => {
+    all.push(arg);
+    return all;
+};
+
+_.each(LODASH_METHODS, (method) => {
+  ReactEntityCollection.prototype[method] = function() {
+    const args = _.reduce(arguments, reduceToNewItem, [ this.items ]) ;
+
+    const result = _[method].apply(_, args);
+
+    if ( !_.isArray(result) ) { return result; }
+
+    return new this.constructor(result);
+  }
+});
+
+ReactEntity.ReactEntityCollection = ReactEntityCollection;
+export default ReactEntity;
