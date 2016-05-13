@@ -172,14 +172,14 @@ describe('ReactEntity', function (){
         children: [{ foo: 'bar' }]
       });
 
-      expect(father.getErrors()).toEqual({ foo: { errors: [ `foo accepts just 'bar' as value` ] } });
+      expect(father.getErrors()).toEqual({ foo: { errors: [ 'foo accepts just \'bar\' as value' ] } });
 
       const lee = new ChildrenEntity({ foo: 'bar invalid '});
       father.children.push(lee);
 
       expect(father.getErrors()).toEqual({
-        foo: { errors: [ `foo accepts just 'bar' as value` ] },
-        children: { 1: { foo: { errors: [ `foo accepts just 'bar' as value` ] } } }
+        foo: { errors: [ 'foo accepts just \'bar\' as value' ] },
+        children: { 1: { foo: { errors: [ 'foo accepts just \'bar\' as value' ] } } }
       });
     });
   });
@@ -267,8 +267,6 @@ describe('ReactEntity', function (){
 
       const collection = new ProductEntityCollection(listA);
       const results = collection.concat(listB).result();
-      console.log(results[0].fetch());
-      console.log(results[1].fetch());
     });
 
   });
