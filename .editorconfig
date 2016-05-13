@@ -2,6 +2,6 @@
 root = true
 
 # Indentation override for all JS under lib directory
-[{src/**.js,src/**.jsx}]
+[{src/**.js}]
 indent_style = space
 indent_size = 2
