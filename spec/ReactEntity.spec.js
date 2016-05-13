@@ -1,86 +1,21 @@
 import Faker from 'faker';
-import ReactEntity, { ReactEntityCollection } from '../src/ReactEntity.jsx';
+import ReactEntity, { ReactEntityCollection } from '../src/ReactEntity';
 
-const defaultField = Faker.name.firstName();
-const defaultValue = Faker.name.firstName();
-
-const fooValidator = function (data, propName){
-  if(data[propName] !== 'bar'){
-    return `${propName} accepts just 'bar' as value`;
-  }
-};
-
-class FakeEntityWithDefault extends ReactEntity {
-  static SCHEMA = {
-    [defaultField]: {
-      validator: function (){},
-      defaultValue: defaultValue
-    },
-    [`_${defaultField}`]: {
-      validator: function (){},
-      defaultValue: `_${defaultValue}`
-    },
-  }
-}
-
-function awaysTruth(){
-  return true;
-}
-
-class ProductEntity extends ReactEntity {
-  static SCHEMA = {
-    name: awaysTruth,
-    price: awaysTruth
-  }
-}
-
-class ProductEntityCollection extends ReactEntityCollection {
-  static TYPE = ProductEntity;
-
-  getSortedItemsByName() {
-    return this.sortBy('name');
-  }
-}
-
-class Validatable extends ReactEntity {
-  static SCHEMA = {
-    field: function (data, propName, entityName){
-      if(data[propName] !== 'valid'){
-        return `${propName} wrong on ${entityName}`;
-      }
-    },
-    otherField: {
-      validator: function (data, propName, entityName){
-        if(data[propName] !== 'valid'){
-          return new Error(`${propName} wrong on ${entityName}`);
-        }
-      },
-      defaultValue: 'bla'
-    }
-  }
-}
-
-class ChildrenEntity  extends ReactEntity {
-  static SCHEMA = {
-    foo: fooValidator
-  }
-}
-
-class FatherEntity extends ReactEntity {
-  static SCHEMA = {
-    foo: {
-      validator: fooValidator,
-      defaultValue: 'bar'
-    }, children: {
-      validator: function (){},
-      type: ChildrenEntity
-    }
-  }
-}
+import {
+  defaultField,
+  defaultValue,
+  FakeEntityWithDefault,
+  ProductEntity,
+  ProductEntityCollection,
+  Validatable,
+  ChildrenEntity,
+  FatherEntity,
+  FatherWithObjectEntity
+} from './fixtures/fakerClasses';
 
 describe('ReactEntity', function (){
   it('should merge with default data', function (){
-    const fakeEntity = new FakeEntityWithDefault();
+const fakeEntity = new FakeEntityWithDefault();
 
     expect(fakeEntity[defaultField]).toBe(defaultValue);
   });
@@ -154,7 +89,7 @@ describe('ReactEntity', function (){
   });
 
   describe('children', function (){
-    it('should auto buid child entities', function (){
+    it('should auto build child entities of array', function (){
       const father = new FatherEntity({
         children: [
           {},
@@ -162,8 +97,20 @@ describe('ReactEntity', function (){
         ]
       });
 
-      expect(father.children[0].constructor === ChildrenEntity).toBe(true);
-      expect(father.children[1].constructor === ChildrenEntity).toBe(true);
+      expect(father.children[0].constructor).toBe(ChildrenEntity);
+      expect(father.children[1].constructor).toBe(ChildrenEntity);
+    });
+
+    it('should auto build using the parameter builder', () => {
+      const father = new FatherWithObjectEntity({
+        children: {
+          content: { field: 'foo' },
+          tweet: { field: 'bar' }
+        }
+      });
+
+      expect(father.children.content.constructor).toBe(ChildrenEntity);
+      expect(father.children.tweet.constructor).toBe(ChildrenEntity);
     });
 
     it('should include errors of children', function (){
@@ -172,14 +119,14 @@ describe('ReactEntity', function (){
         children: [{ foo: 'bar' }]
       });
 
-      expect(father.getErrors()).toEqual({ foo: { errors: [ `foo accepts just 'bar' as value` ] } });
+      expect(father.getErrors()).toEqual({ foo: { errors: [ 'foo accepts just \'bar\' as value' ] } });
 
       const lee = new ChildrenEntity({ foo: 'bar invalid '});
       father.children.push(lee);
 
       expect(father.getErrors()).toEqual({
-        foo: { errors: [ `foo accepts just 'bar' as value` ] },
-        children: { 1: { foo: { errors: [ `foo accepts just 'bar' as value` ] } } }
+        foo: { errors: [ 'foo accepts just \'bar\' as value' ] },
+        children: { 1: { foo: { errors: [ 'foo accepts just \'bar\' as value' ] } } }
       });
     });
   });
@@ -267,8 +214,6 @@ describe('ReactEntity', function (){
 
       const collection = new ProductEntityCollection(listA);
       const results = collection.concat(listB).result();
-      console.log(results[0].fetch());
-      console.log(results[1].fetch());
     });
 
   });
