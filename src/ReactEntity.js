@@ -36,6 +36,8 @@ class ReactEntity {
   }
 
   applyEntityConstructor(field, data) {
+     if (!data) return;
+
     const Type = field.type;
 
     if(field.builder) {

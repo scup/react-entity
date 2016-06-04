@@ -1,4 +1,6 @@
 import Faker from 'faker';
+import { PropTypes } from 'react';
+
 import ReactEntity, { ReactEntityCollection } from '../../src/ReactEntity';
 
 const defaultField = Faker.name.firstName();
@@ -93,6 +95,16 @@ class FatherWithObjectEntity extends ReactEntity {
   }
 }
 
+class ChildWithChildArray extends ReactEntity {
+    static SCHEMA = {
+        name: PropTypes.string,
+        children: {
+            validator: PropTypes.arrayOf(PropTypes.instanceOf(ChildWithChildArray)),
+            type: ChildWithChildArray
+        }
+    }
+}
+
 export default {
   defaultField,
   defaultValue,
@@ -102,5 +114,6 @@ export default {
   Validatable,
   ChildrenEntity,
   FatherEntity,
-  FatherWithObjectEntity
+  FatherWithObjectEntity,
+  ChildWithChildArray
 }
