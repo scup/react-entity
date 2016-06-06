@@ -10,7 +10,8 @@ import {
   Validatable,
   ChildrenEntity,
   FatherEntity,
-  FatherWithObjectEntity
+  FatherWithObjectEntity,
+  ChildWithChildArray
 } from './fixtures/fakerClasses';
 
 describe('ReactEntity', function (){
@@ -214,6 +215,21 @@ const fakeEntity = new FakeEntityWithDefault();
 
       const collection = new ProductEntityCollection(listA);
       const results = collection.concat(listB).result();
+    });
+
+    it('it should build itself along with childs which is of type itself', () => {
+      const childWithChildArray = new ChildWithChildArray({
+          name: 'Node1',
+          children: [{
+              name: 'Node1.1',
+              children: [{
+                  name: "Node 1.1.1"
+              }]
+          }]
+      });
+
+      expect(childWithChildArray.constructor).toBe(ChildWithChildArray);
+      expect(childWithChildArray.children[0].constructor).toBe(ChildWithChildArray);
     });
 
   });
