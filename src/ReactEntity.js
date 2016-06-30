@@ -43,7 +43,7 @@ class ReactEntity {
   }
 
   applyEntityConstructor(field, data) {
-     if (data === undefined || data === null) return;
+     if (data === undefined || data === null) return data;
 
     const Type = field.type;
 
