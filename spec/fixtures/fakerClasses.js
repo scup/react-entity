@@ -105,6 +105,21 @@ class ChildWithChildArray extends ReactEntity {
     }
 }
 
+class WithBooleanFields extends ReactEntity {
+    static SCHEMA = {
+        fieldA: PropTypes.bool,
+        fieldB: {
+          type: Boolean,
+          validator: PropTypes.bool
+        },
+        fieldWithDefault: {
+          validator: PropTypes.bool,
+          defaultValue: false
+        }
+
+    }
+}
+
 export default {
   defaultField,
   defaultValue,
@@ -115,5 +130,6 @@ export default {
   ChildrenEntity,
   FatherEntity,
   FatherWithObjectEntity,
-  ChildWithChildArray
+  ChildWithChildArray,
+  WithBooleanFields
 }

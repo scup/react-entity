@@ -1,6 +1,13 @@
 import ReactEntityCollection from './ReactEntityCollection';
 import objectsByKey from './typeBuilders/objectsByKey';
 
+const isPrimitiveType = function(type) {
+  if (type === Boolean || type === Number || type === String) {
+    return true;
+  }
+  return false;
+};
+
 const createGetterAndSetter = function (instance, field){
   return {
     set: function (value){
@@ -36,7 +43,7 @@ class ReactEntity {
   }
 
   applyEntityConstructor(field, data) {
-     if (!data) return;
+     if (data === undefined || data === null) return data;
 
     const Type = field.type;
 
@@ -45,7 +52,14 @@ class ReactEntity {
     }
 
     if (Array.isArray(data)) {
+      if (isPrimitiveType(Type)) {
+        return data.map(instance => Type(instance));
+      }
       return data.map(instance => new Type(instance));
+    }
+
+    if (isPrimitiveType(Type)) {
+      return Type(data);
     }
 
     return new Type(data);
@@ -55,8 +69,7 @@ class ReactEntity {
     const newData = {};
     let field;
     for(field in this.schema){
-
-      newData[field] = data[field] || this.schema[field].defaultValue;
+      newData[field] = data[field] === undefined ?this.schema[field].defaultValue : data[field];
 
       if (this.schema[field].type) {
         newData[field] = this.applyEntityConstructor(this.schema[field], newData[field]);
