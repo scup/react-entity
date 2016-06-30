@@ -1,8 +1,6 @@
 import ReactEntityCollection from './ReactEntityCollection';
 import objectsByKey from './typeBuilders/objectsByKey';
 
-const PRIMITIVE_TYPES = [Boolean, Number, String];
-
 const isPrimitiveType = function(type) {
   if (type === Boolean || type === Number || type === String) {
     return true;
