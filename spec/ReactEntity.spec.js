@@ -96,6 +96,7 @@ const fakeEntity = new FakeEntityWithDefault();
     beforeEach(() => {
       entity = new WithBooleanFields({
           fieldA: false,
+          fieldB: false,
           fieldWithDefault: undefined
       });
     })
@@ -103,6 +104,7 @@ const fakeEntity = new FakeEntityWithDefault();
     it('returns a boolean "false" when is set "false" to the field', function(){
       expect(entity.valid).toBe(true);
       expect(entity.fetch().fieldA).toBe(false);
+      expect(entity.fetch().fieldB).toBe(false);
     });
 
     it('returns a default boolean "false" when is set "undefined" to the field', function(){
