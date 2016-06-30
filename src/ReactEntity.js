@@ -55,8 +55,7 @@ class ReactEntity {
     const newData = {};
     let field;
     for(field in this.schema){
-
-      newData[field] = data[field] || this.schema[field].defaultValue;
+      newData[field] = data[field] === undefined ?this.schema[field].defaultValue : data[field];
 
       if (this.schema[field].type) {
         newData[field] = this.applyEntityConstructor(this.schema[field], newData[field]);

@@ -11,7 +11,8 @@ import {
   ChildrenEntity,
   FatherEntity,
   FatherWithObjectEntity,
-  ChildWithChildArray
+  ChildWithChildArray,
+  WithBooleanFields
 } from './fixtures/fakerClasses';
 
 describe('ReactEntity', function (){
@@ -87,6 +88,27 @@ const fakeEntity = new FakeEntityWithDefault();
     expect(entity.valid).toBe(false);
     entity.otherField = 'valid';
     expect(entity.valid).toBe(true);
+  });
+
+  describe('Boolean', function (){
+    let entity;
+
+    beforeEach(() => {
+      entity = new WithBooleanFields({
+          fieldA: false,
+          fieldWithDefault: undefined
+      });
+    })
+
+    it('returns a boolean "false" when is set "false" to the field', function(){
+      expect(entity.valid).toBe(true);
+      expect(entity.fetch().fieldA).toBe(false);
+    });
+
+    it('returns a default boolean "false" when is set "undefined" to the field', function(){
+      expect(entity.valid).toBe(true);
+      expect(entity.fetch().fieldWithDefault).toBe(false);
+    });
   });
 
   describe('children', function (){
